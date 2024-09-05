@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <title>مسابقات الرياضيات</title>
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background-image: url('https://source.unsplash.com/1600x900/?math,education');
+            background-size: cover;
+            background-position: center;
+            color: #333;
+        }
+        .quiz {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            width: 100%;
+            max-width: 400px;
+        }
+        .project-info {
+            margin-bottom: 20px;
+            font-size: 1.2em;
+            color: #007bff; /* لون النص */
+        }
+        select, input[type="number"], button {
+            margin: 10px 0;
+            padding: 10px;
+            width: 100%;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            font-size: 16px;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .result {
+            margin-top: 20px;
+            font-size: 1.2em;
+            border-radius: 5px;
+            padding: 10px;
+        }
+        .correct {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .incorrect {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+    </style>
+</head>
+<body>
+
+<div class="project-info">مشروع الطالب: عبدالعزيز الماجد</div>
+
+<div class="quiz">
+    <h2>مسابقات الرياضيات</h2>
+    <label for="type">اختر نوع السؤال:</label>
+    <select id="type">
+        <option value="add">جمع</option>
+        <option value="subtract">طرح</option>
+        <option value="multiply">ضرب</option>
+        <option value="divide">قسمة</option>
+    </select>
+    <br>
+    <label for="count">عدد الأسئلة:</label>
+    <input type="number" id="count" min="1" max="10" value="5" />
+    <br>
+    <button onclick="startQuiz()">ابدأ المسابقة</button>
+    
+    <div id="questionContainer" style="display:none;">
+        <div id="question"></div>
+        <input type="number" id="answer" placeholder="الإجابة" />
+        <button onclick="checkAnswer()">تحقق</button>
+        <div class="result" id="result"></div>
+    </div>
+</div>
+
+<script>
+    let num1, num2, correctAnswer, operation, questionCount, currentQuestion, score;
+
+    function startQuiz() {
+        questionCount = parseInt(document.getElementById('count').value);
+        currentQuestion = 0;
+        score = 0;
+        document.getElementById('questionContainer').style.display = 'block';
+        generateQuestion();
+    }
+
+    function generateQuestion() {
+        const type = document.getElementById('type').value;
+        num1 = Math.floor(Math.random() * 10) + 1; // عدد بين 1 و 10
+        num2 = Math.floor(Math.random() * 10) + 1; // عدد بين 1 و 10
+        
+        switch (type) {
+            case 'add':
+                correctAnswer = num1 + num2;
+                operation = '+';
+                break;
+            case 'subtract':
+                correctAnswer = num1 - num2;
+                operation = '-';
+                break;
+            case 'multiply':
+                correctAnswer = num1 * num2;
+                operation = '*';
+                break;
+            case 'divide':
+                correctAnswer = (num1 / num2).toFixed(2); // القسمة مع تقريب إلى منزلتين
+                operation = '/';
+                break;
+        }
+
+        document.getElementById('question').innerText = `ما هو ${num1} ${operation} ${num2}؟`;
+        document.getElementById('result').innerText = '';
+        document.getElementById('answer').value = '';
+    }
+
+    function checkAnswer() {
+        const userAnswer = parseFloat(document.getElementById('answer').value);
+        const resultElement = document.getElementById('result');
+
+        if (userAnswer === correctAnswer) {
+            score++;
+            resultElement.innerText = 'إجابة صحيحة!';
+            resultElement.className = 'result correct';
+        } else {
+            resultElement.innerText = `الإجابة خاطئة. الجواب الصحيح هو ${correctAnswer}.`;
+            resultElement.className = 'result incorrect';
+        }
+
+        currentQuestion++;
+        if (currentQuestion < questionCount) {
+            setTimeout(generateQuestion, 1500); // تأخير السؤال التالي
+        } else {
+            resultElement.innerText += `\nانتهت المسابقة! حصلت على ${score} من ${questionCount} إجابات صحيحة.`;
+            document.getElementById('questionContainer').style.display = 'none';
+        }
+    }
+</script>
+
+</body>
+</html>
